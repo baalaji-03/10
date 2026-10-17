@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baalaji Pharmacy Management System</title>
+  <meta name="description" content="Professional, Complete Pharmacy Management Software with GST POS Billing, Batch Expiry Radar, Inventory, and Windows Desktop Support">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for Interactive Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Core CSS & Print Media CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/print.css" media="print">
+  <script>
+    window.BAALAAJI_API_BASE_URL = window.location.hostname.endsWith(".vercel.app")
+      ? "https://backend-5lpv.vercel.app"
+      : window.location.origin;
+  </script>
+</head>
+<body>
+
+  <!-- ======================================================================
+       1. LOGIN SCREEN
+       ====================================================================== -->
+  <div id="login-screen" style="display:flex; min-height:100vh; background:linear-gradient(135deg, #0f172a 0%, #0f766e 100%); align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; border-radius:16px; padding:36px; width:100%; max-width:440px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);">
+      <div style="text-align:center; margin-bottom:28px;">
+        <img src="/assets/logo.svg" alt="Baalaji Pharmacy Logo" style="width:64px; height:64px; margin-bottom:12px;" />
+        <h2 style="font-size:22px; font-weight:800; color:#0f172a; margin:0;">Baalaji Pharmacy</h2>
+        <p style="font-size:13px; color:#64748b; margin-top:4px;">Complete Pharmacy Management System</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username</label>
+          <input type="text" id="login-username" placeholder="Enter your username" required autofocus />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width:100%; padding:12px; font-size:15px; margin-top:8px;">
+          Sign In to Dashboard
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       2. MAIN APP CONTAINER
+       ====================================================================== -->
+  <div id="app-container" style="display:none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="/assets/logo.svg" alt="Baalaji Pharmacy Logo" class="sidebar-logo" />
+        <div class="sidebar-brand">
+          <h1>Baalaji Medicals</h1>
+          <p>Care, Trust & Wellness</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a class="nav-item active" data-view="dashboard">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" data-view="pos">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          POS Billing (F9)
+        </a>
+
+        <div class="nav-section-title">Inventory & Stock</div>
+        <a class="nav-item" data-view="medicines" data-role-required="Pharmacist">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+          Medicines & Batches
+        </a>
+        <a class="nav-item" data-view="purchases" data-role-required="Pharmacist">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Purchase Entry
+        </a>
+        <a class="nav-item" data-view="suppliers" data-role-required="Pharmacist">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Suppliers & Ledger
+        </a>
+
+        <div class="nav-section-title">Customers & Alarms</div>
+        <a class="nav-item" data-view="customers">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Customers & History
+        </a>
+        <a class="nav-item" data-view="alerts" data-role-required="Pharmacist">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Alerts & Expiry Radar
+          <span id="badge-near-expiry" class="nav-badge orange">0</span>
+        </a>
+        <a class="nav-item" data-view="returns" data-role-required="Pharmacist">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Returns & Credit Notes
+        </a>
+
+        <div class="nav-section-title" data-role-required="Admin">Administration</div>
+        <a class="nav-item" data-view="reports" data-role-required="Admin">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Reports & GST
+        </a>
+        <a class="nav-item" data-view="settings" data-role-required="Admin">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings & Users
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div id="current-user-avatar" class="user-avatar">A</div>
+          <div class="user-details">
+            <h4 id="current-user-name">Administrator</h4>
+            <p id="current-user-role">Admin</p>
+          </div>
+        </div>
+        <button id="btn-logout" title="Sign Out" style="background:none; border:none; color:#94a3b8; cursor:pointer;">
+          <svg style="width:18px; height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <main class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="page-title-box">
+          <h2 id="header-title">Dashboard Overview</h2>
+          <p id="header-subtitle">Real-time pharmacy analytics, sales, stock & alerts</p>
+        </div>
+        <div class="header-actions">
+          <div class="header-status-pill">
+            <span class="status-dot"></span>
+            <span>MySQL Online • GST Active</span>
+          </div>
+          <button class="btn btn-primary" onclick="App.navigateTo('pos')">
+            <svg style="width:16px; height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            + New Bill (F9)
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+
+        <!-- ================= VIEW: DASHBOARD ================= -->
+        <section id="view-dashboard" class="view-section active">
+          <!-- 4 KPI Cards Row 1 -->
+          <div class="grid-cards-4">
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Today's Sales</h4>
+                <div id="kpi-today-sales" class="value">₹ 0.00</div>
+                <div id="kpi-today-bills" class="sub-text">0 Bills Today</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-teal">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Estimated Gross Profit</h4>
+                <div id="kpi-gross-profit" class="value">₹ 0.00</div>
+                <div class="sub-text">Based on Batch Purchase Cost</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-green">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Available Stock</h4>
+                <div id="kpi-total-meds" class="value">0</div>
+                <div id="kpi-available-stock" class="sub-text">0 Units in Stock</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-blue">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Customers Registered</h4>
+                <div id="kpi-customers" class="value">0</div>
+                <div class="sub-text">Prescription & Purchase Records</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-teal">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Alert & Purchases KPI Cards Row 2 -->
+          <div class="grid-cards-4">
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Today's Purchases</h4>
+                <div id="kpi-today-purchases" class="value">₹ 0.00</div>
+                <div class="sub-text">Stock received today</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-blue">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Low-Stock Medicines</h4>
+                <div id="kpi-low-stock" class="value">0</div>
+                <div class="sub-text">Below minimum threshold</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-orange">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Expiring In &lt; 6 Months</h4>
+                <div id="kpi-near-expiry" class="value">0</div>
+                <div class="sub-text">Orange Alert Batches</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-orange">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Expired Medicine Batches</h4>
+                <div id="kpi-expired" class="value">0</div>
+                <div class="sub-text">Red Alert: Blocked from sale</div>
+              </div>
+              <div class="kpi-icon-wrap kpi-red">
+                <svg style="width:24px; height:24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart & Notifications Grid -->
+          <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-bottom:24px;">
+            <div class="chart-container-card" style="margin-bottom:0;">
+              <div class="card-header-flex">
+                <h3>Monthly Sales vs Purchases Trend</h3>
+                <span style="font-size:12px; color:#64748b;">Last 6 Months Performance</span>
+              </div>
+              <div style="height: 260px;">
+                <canvas id="monthlySalesChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-container-card" style="margin-bottom:0; display:flex; flex-direction:column;">
+              <div class="card-header-flex">
+                <h3>System Notifications</h3>
+                <span class="badge badge-teal">Live</span>
+              </div>
+              <div id="recent-notifications-list" style="flex:1; overflow-y:auto; font-size:12px;"></div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>Recent Completed Sales Bills</h3>
+              <button class="btn btn-secondary btn-sm" onclick="App.navigateTo('reports')">View All Reports</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Invoice No</th>
+                    <th>Customer Name</th>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-transactions-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: POS BILLING ================= -->
+        <section id="view-pos" class="view-section">
+          <div class="pos-wrapper">
+            <!-- Left: Catalog & Search -->
+            <div class="pos-catalog-panel">
+              <div class="pos-search-bar">
+                <div style="flex:1; position:relative;">
+                  <input type="text" id="pos-barcode-input" placeholder="Scan Barcode / Item Code & Press Enter..." 
+                    style="width:100%; padding:10px 14px; border:2px solid #0f766e; border-radius:6px; font-size:14px; font-weight:600; outline:none;" />
+                </div>
+                <div style="flex:1.5; position:relative;">
+                  <input type="text" id="pos-search-input" placeholder="Type Medicine or Generic Name (F2)..." 
+                    style="width:100%; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px; outline:none;" />
+                  <!-- Search Autocomplete Dropdown -->
+                  <div id="pos-search-dropdown" style="display:none; position:absolute; top:46px; left:0; right:0; background:white; border:1px solid #cbd5e1; border-radius:6px; max-height:280px; overflow-y:auto; box-shadow:var(--shadow-lg); z-index:30;"></div>
+                </div>
+              </div>
+
+              <!-- Cart Table in POS -->
+              <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+                <div style="padding:10px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0; font-size:12px; font-weight:700; color:#64748b; display:flex; justify-content:space-between;">
+                  <span>MEDICINE ITEMS IN CURRENT BILL</span>
+                  <span id="cart-items-count" class="badge badge-teal">0</span>
+                </div>
+                <div id="pos-cart-items-list" class="cart-items-scroll"></div>
+              </div>
+            </div>
+
+            <!-- Right: Customer Info & Checkout Panel -->
+            <div class="pos-cart-panel">
+              <div class="cart-header">
+                <h3 style="font-size:15px; font-weight:700;">Customer & Payment Details</h3>
+                <button id="btn-clear-cart" class="btn btn-secondary btn-sm" style="color:#ef4444;">Clear</button>
+              </div>
+
+              <div style="padding:16px; border-bottom:1px solid #e2e8f0;">
+                <div class="form-group" style="margin-bottom:10px;">
+                  <label for="pos-customer-mobile" style="font-size:11.5px;">Customer Mobile (F4)</label>
+                  <input type="text" id="pos-customer-mobile" placeholder="Mobile Number (Auto-selects returning)" />
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                  <label for="pos-customer-name" style="font-size:11.5px;">Customer Name</label>
+                  <input type="text" id="pos-customer-name" placeholder="Walk-in Customer" />
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                  <label for="pos-doctor-name" style="font-size:11.5px;">Doctor Name (Optional)</label>
+                  <input type="text" id="pos-doctor-name" placeholder="Prescribing Doctor" />
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="pos-payment-method" style="font-size:11.5px;">Payment Method</label>
+                  <select id="pos-payment-method">
+                    <option value="CASH">Cash</option>
+                    <option value="UPI">UPI / QR Code</option>
+                    <option value="CARD">Credit / Debit Card</option>
+                    <option value="CREDIT">Customer Credit Ledger</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="cart-footer">
+                <div class="cart-summary-line">
+                  <span>Gross Subtotal:</span>
+                  <span id="pos-cart-subtotal">₹ 0.00</span>
+                </div>
+                <div class="cart-summary-line">
+                  <span>Discount:</span>
+                  <span id="pos-cart-discount">- ₹ 0.00</span>
+                </div>
+                <div class="cart-summary-line">
+                  <span>GST (CGST + SGST):</span>
+                  <span id="pos-cart-tax">₹ 0.00</span>
+                </div>
+                <div class="cart-summary-line grand-total">
+                  <span>NET TOTAL:</span>
+                  <span id="pos-cart-total">₹ 0.00</span>
+                </div>
+
+                <button id="btn-pos-checkout" class="btn btn-primary btn-lg" style="width:100%; margin-top:14px;">
+                  Complete & Print Bill (F9)
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: MEDICINES ================= -->
+        <section id="view-medicines" class="view-section">
+          <div class="table-card">
+            <div class="table-toolbar">
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <div class="search-input-wrap">
+                  <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="text" id="med-search-filter" placeholder="Search medicine, generic, barcode..." />
+                </div>
+                <select id="med-category-filter" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:13.5px;">
+                  <option value="">All Categories</option>
+                  <option value="Analgesic / Antipyretic">Analgesic / Antipyretic</option>
+                  <option value="Antibiotic">Antibiotic</option>
+                  <option value="Gastrointestinal">Gastrointestinal</option>
+                  <option value="Antidiabetic">Antidiabetic</option>
+                  <option value="Cardiovascular">Cardiovascular</option>
+                  <option value="Respiratory / Antiallergic">Respiratory</option>
+                  <option value="Vitamins & Supplements">Vitamins</option>
+                  <option value="OTC Balms">OTC</option>
+                </select>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-secondary" onclick="App.openExcelImportModal()">
+                  <svg style="width:16px; height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Import Excel
+                </button>
+                <button class="btn btn-secondary" onclick="API.download('/api/excel/export/inventory', 'Pharmacy_Inventory.xlsx')">
+                  Export Excel
+                </button>
+                <button class="btn btn-primary" onclick="Medicines.openAddMedicineModal()">
+                  + Register New Medicine
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item Code</th>
+                    <th>Medicine & Generic Name</th>
+                    <th>Category</th>
+                    <th>Rack</th>
+                    <th>HSN / GST</th>
+                    <th>Stock Status</th>
+                    <th>Selling MRP</th>
+                    <th>Batches</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="medicines-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: PURCHASES ================= -->
+        <section id="view-purchases" class="view-section">
+          <div class="table-card" style="margin-bottom:24px;">
+            <div class="table-toolbar">
+              <h3>Create Supplier Purchase Invoice (Stock-In)</h3>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="API.download('/api/excel/template/purchases', 'Purchase_Template.xlsx')">
+                Download Excel PO Template
+              </button>
+            </div>
+            <div style="padding:20px;">
+              <form id="form-purchase-entry">
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="purchase-supplier-select">Supplier / Distributor *</label>
+                    <select id="purchase-supplier-select" required></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="purchase-invoice-number">Supplier Invoice No *</label>
+                    <input type="text" id="purchase-invoice-number" placeholder="e.g. INV-2026-908" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="purchase-invoice-date">Invoice Date *</label>
+                    <input type="date" id="purchase-invoice-date" required />
+                  </div>
+                </div>
+
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="purchase-received-date">Received Date *</label>
+                    <input type="date" id="purchase-received-date" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="purchase-additional-charges">Freight / Other Charges (₹)</label>
+                    <input type="number" step="0.01" id="purchase-additional-charges" value="0.00" oninput="Purchases.recalculateTotals()" />
+                  </div>
+                  <div class="form-group">
+                    <label for="purchase-paid-amount">Paid Amount (₹)</label>
+                    <input type="number" step="0.01" id="purchase-paid-amount" placeholder="0.00" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="purchase-bill-file">Supplier Bill (PDF, JPG, or PNG; optional, max 4 MB)</label>
+                  <input type="file" id="purchase-bill-file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                </div>
+
+                <div class="form-group">
+                  <label>Medicines & Batches in this Invoice *</label>
+                  <div class="table-responsive" style="border:1px solid #cbd5e1; border-radius:6px; max-height:280px; overflow-y:auto;">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>Medicine Name</th>
+                          <th>Batch</th>
+                          <th>Expiry Date</th>
+                          <th>Qty</th>
+                          <th>Free</th>
+                          <th>Cost (₹)</th>
+                          <th>MRP (₹)</th>
+                          <th>Disc%</th>
+                          <th>GST</th>
+                          <th>Total</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="purchase-items-tbody"></tbody>
+                    </table>
+                  </div>
+                  <button type="button" id="btn-add-purchase-row" class="btn btn-secondary btn-sm" style="margin-top:10px;">
+                    + Add Medicine Item
+                  </button>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; background:#f8fafc; padding:16px; border-radius:8px; margin-top:14px;">
+                  <div class="form-group" style="margin-bottom:0; flex:1; max-width:400px;">
+                    <label for="purchase-notes">Notes / Terms</label>
+                    <input type="text" id="purchase-notes" placeholder="Optional notes, delivery receipt, etc." />
+                  </div>
+                  <div style="text-align:right; min-width:240px;">
+                    <div style="font-size:12.5px; color:#64748b;">Subtotal: <b id="pur-calc-subtotal">₹ 0.00</b></div>
+                    <div style="font-size:12.5px; color:#64748b;">Discount: <b id="pur-calc-discount">- ₹ 0.00</b></div>
+                    <div style="font-size:12.5px; color:#64748b;">Total GST: <b id="pur-calc-tax">₹ 0.00</b></div>
+                    <div style="font-size:18px; font-weight:800; color:#0f766e; margin-top:6px;">Net Total: <span id="pur-calc-total">₹ 0.00</span></div>
+                    <button type="submit" class="btn btn-primary" style="margin-top:10px;">
+                      Confirm & Save Purchase
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Purchase Invoices History -->
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>Recorded Purchase Invoices</h3>
+              <button class="btn btn-secondary btn-sm" onclick="API.download('/api/excel/export/inventory', 'Purchase_Report.xlsx')">
+                Export Purchases
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Purchase No</th>
+                    <th>Supplier</th>
+                    <th>Supplier Invoice</th>
+                    <th>Date</th>
+                    <th>Total (₹)</th>
+                    <th>Payment</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="purchase-history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: SUPPLIERS ================= -->
+        <section id="view-suppliers" class="view-section">
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>Supplier & Wholesale Distributors</h3>
+              <button class="btn btn-primary" onclick="Suppliers.openAddSupplierModal()">
+                + Register Supplier
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Supplier Name & Contact</th>
+                    <th>Phone</th>
+                    <th>GSTIN</th>
+                    <th>Location</th>
+                    <th>Outstanding Balance</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="suppliers-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: CUSTOMERS ================= -->
+        <section id="view-customers" class="view-section">
+          <div class="table-card">
+            <div class="table-toolbar">
+              <div class="search-input-wrap">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="customer-search-filter" placeholder="Search customer by name or mobile..." />
+              </div>
+              <button class="btn btn-primary" onclick="Customers.openAddCustomerModal()">
+                + Register Customer
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="customers-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: ALERTS ================= -->
+        <section id="view-alerts" class="view-section">
+          <!-- Expiry Alerts Section -->
+          <div class="table-card" style="margin-bottom:24px;">
+            <div class="table-toolbar">
+              <div>
+                <h3 style="color:#b45309;">Medicine Expiry Radar (Next 6 Months & Expired)</h3>
+                <p style="font-size:12px; color:#64748b;">Orange = Expiring within 6 months • Red = Expired (Blocked from POS sale)</p>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button id="btn-export-expiry-excel" class="btn btn-secondary btn-sm">Export Expiry Excel</button>
+                <button id="btn-email-expiry-alert" class="btn btn-primary btn-sm">Email Expiry Report</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Medicine</th>
+                    <th>Batch</th>
+                    <th>Expiry Date</th>
+                    <th>Days Left</th>
+                    <th>Quantity</th>
+                    <th>Unit Cost</th>
+                    <th>Stock Value</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="expiry-alerts-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Low Stock Section -->
+          <div class="table-card">
+            <div class="table-toolbar">
+              <div>
+                <h3 style="color:#0f766e;">Low Stock & Reorder Alarms</h3>
+                <p style="font-size:12px; color:#64748b;">Medicines with stock falling below configured minimum safety levels</p>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button id="btn-export-lowstock-excel" class="btn btn-secondary btn-sm">Export Low Stock Excel</button>
+                <button id="btn-email-lowstock-alert" class="btn btn-primary btn-sm">Email Stock Report</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Medicine</th>
+                    <th>Current Stock</th>
+                    <th>Min Safety Level</th>
+                    <th>Suggested Reorder</th>
+                    <th>Est. Reorder Cost</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="lowstock-alerts-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: RETURNS ================= -->
+        <section id="view-returns" class="view-section">
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>Sales Return & Bill Refund Processing</h3>
+            </div>
+            <div style="padding:20px;">
+              <div style="display:flex; gap:12px; max-width:550px; margin-bottom:20px;">
+                <input type="text" id="return-invoice-lookup" placeholder="Enter Invoice No (e.g. INV-202610-0001)" 
+                  style="flex:1; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px;" />
+                <button id="btn-lookup-return-sale" class="btn btn-primary">Find Bill</button>
+              </div>
+
+              <!-- Found Bill Info & Items -->
+              <div id="return-sale-info" style="display:none;">
+                <div style="background:#f8fafc; padding:14px; border-radius:8px; margin-bottom:16px; display:flex; justify-content:space-between; font-size:13px;">
+                  <div>Customer: <b id="ret-cust-name"></b> | Date: <span id="ret-bill-date"></span></div>
+                  <div>Original Bill Amount: <b id="ret-bill-total"></b></div>
+                </div>
+
+                <form id="form-process-sales-return">
+                  <table class="data-table" style="margin-bottom:16px;">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th>Batch</th>
+                        <th>Billed Qty</th>
+                        <th>Price (₹)</th>
+                        <th>Return Qty</th>
+                        <th>Restock Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="return-items-select-tbody"></tbody>
+                  </table>
+
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label for="return-reason-input">Reason for Return</label>
+                      <input type="text" id="return-reason-input" placeholder="e.g. Doctor changed prescription / Excess" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="return-refund-method">Refund Mode</label>
+                      <select id="return-refund-method">
+                        <option value="CASH">Cash Refund</option>
+                        <option value="UPI">UPI Refund</option>
+                        <option value="CREDIT_NOTE">Customer Credit Note</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-danger" style="margin-top:10px;">
+                    Authorize Return & Restock Selected Items
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: REPORTS ================= -->
+        <section id="view-reports" class="view-section">
+          <!-- Filters Toolbar -->
+          <div class="table-card" style="padding:16px 20px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:600; font-size:13px;">Date Preset:</span>
+                <select id="report-date-preset" style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
+                  <option value="today">Today</option>
+                  <option value="week">Last 7 Days</option>
+                  <option value="month" selected>This Month</option>
+                  <option value="all">All Time</option>
+                </select>
+                <input type="date" id="report-start-date" style="padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;" />
+                <span>to</span>
+                <input type="date" id="report-end-date" style="padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;" />
+                <button id="btn-apply-report-filter" class="btn btn-primary btn-sm">Apply Filter</button>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button id="btn-rep-export-sales" class="btn btn-secondary btn-sm">Export Sales Excel</button>
+                <button id="btn-rep-export-gst" class="btn btn-secondary btn-sm">Export GSTR-1 Excel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Tiles -->
+          <div class="grid-cards-4">
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Gross Sales Revenue</h4>
+                <div id="rep-gross-sales" class="value">₹ 0.00</div>
+                <div id="rep-sales-returns" class="sub-text">- ₹ 0.00 Returns</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Net Sales Revenue</h4>
+                <div id="rep-net-revenue" class="value" style="color:#0f766e;">₹ 0.00</div>
+                <div class="sub-text">Revenue after refunds</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Cost of Goods Sold (COGS)</h4>
+                <div id="rep-cogs" class="value">₹ 0.00</div>
+                <div class="sub-text">Actual batch purchase cost</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-info">
+                <h4>Estimated Gross Profit</h4>
+                <div id="rep-gross-profit" class="value" style="color:#10b981;">₹ 0.00</div>
+                <div id="rep-gross-margin" class="sub-text">0.0% Margin</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GST Liabilities & Breakdown Grid -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:24px;">
+            <div class="chart-container-card" style="margin-bottom:0;">
+              <h3>GST Tax Liabilities Summary</h3>
+              <div style="margin-top:14px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                  <span>Output GST Collected (Sales):</span> <b id="rep-gst-output">₹ 0.00</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; color:#64748b;">
+                  <span>- CGST Share:</span> <span id="rep-gst-cgst">₹ 0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; color:#64748b;">
+                  <span>- SGST Share:</span> <span id="rep-gst-sgst">₹ 0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                  <span>Input Tax Credit (Purchases):</span> <b id="rep-gst-itc">₹ 0.00</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:10px 0; font-size:15px; font-weight:800; color:#0f766e; border-top:2px solid #0f766e; margin-top:6px;">
+                  <span>Net Payable GST:</span> <span id="rep-gst-payable">₹ 0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-container-card" style="margin-bottom:0;">
+              <h3>Sales by Payment Method</h3>
+              <div id="rep-payment-methods-list" style="margin-top:14px;"></div>
+            </div>
+          </div>
+
+          <!-- Best-Selling Medicines -->
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>Top Best-Selling Medicines</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Medicine Description</th>
+                    <th>Units Sold</th>
+                    <th>Total Revenue (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="rep-top-sellers-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: SETTINGS ================= -->
+        <section id="view-settings" class="view-section">
+          <!-- Pharmacy Profile -->
+          <div class="table-card" style="margin-bottom:24px;">
+            <div class="table-toolbar">
+              <h3>Pharmacy Store Profile & GST/Drug License Details</h3>
+            </div>
+            <div style="padding:24px;">
+              <form id="form-pharmacy-settings">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="set-pharmacy-name">Pharmacy / Store Name *</label>
+                    <input type="text" id="set-pharmacy-name" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-tagline">Tagline</label>
+                    <input type="text" id="set-tagline" />
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="set-addr1">Address Line 1 *</label>
+                    <input type="text" id="set-addr1" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-addr2">Address Line 2</label>
+                    <input type="text" id="set-addr2" />
+                  </div>
+                </div>
+
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="set-city">City *</label>
+                    <input type="text" id="set-city" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-state">State *</label>
+                    <input type="text" id="set-state" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-pincode">Postal PIN Code *</label>
+                    <input type="text" id="set-pincode" required />
+                  </div>
+                </div>
+
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="set-phone">Phone / Mobile *</label>
+                    <input type="text" id="set-phone" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-email">Store Email *</label>
+                    <input type="email" id="set-email" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-gstin">GSTIN No. *</label>
+                    <input type="text" id="set-gstin" required />
+                  </div>
+                </div>
+
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="set-dl">Drug License Numbers (20B, 21B) *</label>
+                    <input type="text" id="set-dl" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-pan">PAN Number</label>
+                    <input type="text" id="set-pan" />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-prefix">Invoice Prefix *</label>
+                    <input type="text" id="set-prefix" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="set-declaration">Invoice Terms & Declaration</label>
+                  <textarea id="set-declaration" rows="3"></textarea>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="set-expiry-months">Expiry Warning Horizon (Months) *</label>
+                    <input type="number" id="set-expiry-months" min="1" max="12" value="6" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="set-reorder-mult">Default Reorder Multiplier</label>
+                    <input type="number" step="0.1" id="set-reorder-mult" value="2.0" />
+                  </div>
+                </div>
+
+                <!-- SMTP Section -->
+                <div style="border-top:1px solid #cbd5e1; padding-top:20px; margin-top:10px;">
+                  <h4 style="font-size:14px; color:#0f766e; margin-bottom:12px;">SMTP Email Integration Settings</h4>
+                  <div class="form-grid-3">
+                    <div class="form-group">
+                      <label for="set-smtp-host">SMTP Host</label>
+                      <input type="text" id="set-smtp-host" placeholder="e.g. smtp.gmail.com" />
+                    </div>
+                    <div class="form-group">
+                      <label for="set-smtp-port">SMTP Port</label>
+                      <input type="number" id="set-smtp-port" value="587" />
+                    </div>
+                    <div class="form-group">
+                      <label for="set-smtp-user">SMTP Username / Email</label>
+                      <input type="text" id="set-smtp-user" placeholder="your_email@gmail.com" />
+                    </div>
+                  </div>
+
+                  <div class="form-grid-3">
+                    <div class="form-group">
+                      <label for="set-smtp-pass">SMTP Password / App Password</label>
+                      <input type="password" id="set-smtp-pass" placeholder="••••••••••••" />
+                    </div>
+                    <div class="form-group">
+                      <label for="set-smtp-from">From Email Address</label>
+                      <input type="email" id="set-smtp-from" placeholder="noreply@baalajipharmacy.com" />
+                    </div>
+                    <div class="form-group">
+                      <label for="set-alert-recipient">Alert Recipient Email</label>
+                      <input type="email" id="set-alert-recipient" placeholder="manager@pharmacy.com" />
+                    </div>
+                  </div>
+
+                  <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+                      <input type="checkbox" id="set-smtp-tls" checked />
+                      Enable TLS Security
+                    </label>
+                    <button type="button" id="btn-test-smtp" class="btn btn-secondary btn-sm">
+                      Send Test Email
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top:20px;">
+                  Save System Settings
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- User Management (Admin Only) -->
+          <div class="table-card">
+            <div class="table-toolbar">
+              <h3>System Users & Access Roles</h3>
+              <button class="btn btn-primary btn-sm" onclick="Settings.openAddUserModal()">+ Add New User</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Audit Logs -->
+          <div class="table-card" style="margin-top:24px;">
+            <div class="table-toolbar">
+              <h3>System Audit Trails & Security Logs</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Module</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-logs-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ======================================================================
+       3. MODALS
+       ====================================================================== -->
+
+  <!-- Invoice Print Preview Modal (58mm, 80mm, A4) -->
+  <div id="modal-invoice-print" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <h3>Invoice Print Preview</h3>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-secondary btn-sm btn-format-toggle" data-format="58mm">58mm Thermal</button>
+            <button class="btn btn-secondary btn-sm btn-format-toggle active" data-format="80mm">80mm Thermal</button>
+            <button class="btn btn-secondary btn-sm btn-format-toggle" data-format="A4">A4 Full Bill</button>
+          </div>
+        </div>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" style="background:#e2e8f0; padding:16px;">
+        <div class="invoice-preview-wrapper">
+          <!-- The Receipt Paper element -->
+          <div id="printable-receipt-area" class="receipt-paper format-80mm"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-download-invoice-pdf" class="btn btn-secondary">Download PDF</button>
+        <button id="btn-trigger-print" class="btn btn-primary">
+          <svg style="width:16px; height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Batch Selector Modal in POS -->
+  <div id="modal-pos-batch-select" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Select Batch for <span id="batch-select-med-name" style="color:#0f766e;"></span></h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px; color:#64748b; margin-bottom:14px;">Select the physical batch to dispense. Expired batches are automatically blocked by the system.</p>
+        <div id="pos-batch-options-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Medicine Modal -->
+  <div id="modal-add-medicine" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>Register New Medicine</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-medicine">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="new-med-name">Medicine Brand Name *</label>
+              <input type="text" id="new-med-name" placeholder="e.g. Dolo 650mg Tablet" required />
+            </div>
+            <div class="form-group">
+              <label for="new-med-generic">Generic Salt Name</label>
+              <input type="text" id="new-med-generic" placeholder="e.g. Paracetamol 650mg" />
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="new-med-mfg">Manufacturer</label>
+              <input type="text" id="new-med-mfg" placeholder="e.g. Micro Labs" />
+            </div>
+            <div class="form-group">
+              <label for="new-med-category">Category</label>
+              <select id="new-med-category">
+                <option value="Allopathy">Allopathy</option>
+                <option value="Analgesic / Antipyretic">Analgesic / Antipyretic</option>
+                <option value="Antibiotic">Antibiotic</option>
+                <option value="Gastrointestinal">Gastrointestinal</option>
+                <option value="Antidiabetic">Antidiabetic</option>
+                <option value="Cardiovascular">Cardiovascular</option>
+                <option value="Respiratory / Antiallergic">Respiratory</option>
+                <option value="Vitamins & Supplements">Vitamins</option>
+                <option value="OTC Balms">OTC Balms</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new-med-hsn">HSN Code</label>
+              <input type="text" id="new-med-hsn" value="3004" />
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="new-med-gst">GST Rate (%)</label>
+              <select id="new-med-gst">
+                <option value="12">12%</option>
+                <option value="5">5%</option>
+                <option value="18">18%</option>
+                <option value="0">0%</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new-med-rack">Rack / Shelf Location</label>
+              <input type="text" id="new-med-rack" placeholder="e.g. Rack-A1" />
+            </div>
+            <div class="form-group">
+              <label for="new-med-unit">Unit</label>
+              <input type="text" id="new-med-unit" value="Strip (15 Tab)" />
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="new-med-min-stock">Min Stock Safety Level</label>
+              <input type="number" id="new-med-min-stock" value="10" />
+            </div>
+            <div class="form-group">
+              <label for="new-med-purchase-price">Default Purchase Price (₹)</label>
+              <input type="number" step="0.01" id="new-med-purchase-price" placeholder="0.00" />
+            </div>
+            <div class="form-group">
+              <label for="new-med-selling-price">Selling Price / MRP (₹)</label>
+              <input type="number" step="0.01" id="new-med-selling-price" placeholder="0.00" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="new-med-barcode">Barcode / EAN (Optional)</label>
+            <input type="text" id="new-med-barcode" placeholder="Scan or enter barcode" />
+          </div>
+
+          <!-- Initial Batch Section -->
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-top:8px;">
+            <div style="font-weight:700; font-size:13px; color:#0f766e; margin-bottom:8px;">Optional Opening Stock Batch</div>
+            <div class="form-grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label for="new-med-batch" style="font-size:11.5px;">Batch Number</label>
+                <input type="text" id="new-med-batch" placeholder="e.g. DL2026A" />
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label for="new-med-expiry" style="font-size:11.5px;">Expiry Date</label>
+                <input type="date" id="new-med-expiry" />
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label for="new-med-qty" style="font-size:11.5px;">Opening Quantity</label>
+                <input type="number" id="new-med-qty" placeholder="Units" />
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Medicine</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Batch Modal -->
+  <div id="modal-add-batch" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="batch-modal-med-title">Add Batch</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-batch">
+          <input type="hidden" id="batch-modal-med-id" />
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="batch-number-input">Batch Number *</label>
+              <input type="text" id="batch-number-input" placeholder="e.g. BN-8822" required />
+            </div>
+            <div class="form-group">
+              <label for="batch-expiry-input">Expiry Date *</label>
+              <input type="date" id="batch-expiry-input" required />
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="batch-qty-input">Quantity *</label>
+              <input type="number" id="batch-qty-input" min="1" value="10" required />
+            </div>
+            <div class="form-group">
+              <label for="batch-purchase-price">Purchase Price (₹)</label>
+              <input type="number" step="0.01" id="batch-purchase-price" required />
+            </div>
+            <div class="form-group">
+              <label for="batch-selling-price">Selling Price (₹)</label>
+              <input type="number" step="0.01" id="batch-selling-price" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="batch-mrp">MRP (₹)</label>
+            <input type="number" step="0.01" id="batch-mrp" required />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Batch to Stock</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Batches Detail Modal -->
+  <div id="modal-view-batches" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="view-batches-title">Batches</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Batch Number</th>
+              <th>Expiry Date</th>
+              <th>Days Left</th>
+              <th>Stock</th>
+              <th>Purchase Price</th>
+              <th>MRP</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="view-batches-tbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Supplier Modal -->
+  <div id="modal-add-supplier" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Register New Supplier</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-supplier">
+          <div class="form-group">
+            <label for="sup-name">Supplier / Agency Name *</label>
+            <input type="text" id="sup-name" placeholder="e.g. Apex Pharma Distributors" required />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="sup-contact">Contact Person</label>
+              <input type="text" id="sup-contact" />
+            </div>
+            <div class="form-group">
+              <label for="sup-phone">Phone Number *</label>
+              <input type="text" id="sup-phone" required />
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="sup-email">Email</label>
+              <input type="email" id="sup-email" />
+            </div>
+            <div class="form-group">
+              <label for="sup-gstin">GSTIN</label>
+              <input type="text" id="sup-gstin" placeholder="33AAAAA0000A1Z5" />
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="sup-dl">Drug License No.</label>
+              <input type="text" id="sup-dl" />
+            </div>
+            <div class="form-group">
+              <label for="sup-opening-bal">Opening Outstanding Balance (₹)</label>
+              <input type="number" step="0.01" id="sup-opening-bal" value="0.00" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sup-address">Address</label>
+            <input type="text" id="sup-address" />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="sup-city">City</label>
+              <input type="text" id="sup-city" value="Chennai" />
+            </div>
+            <div class="form-group">
+              <label for="sup-state">State</label>
+              <input type="text" id="sup-state" value="Tamil Nadu" />
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Supplier</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Payment Modal -->
+  <div id="modal-supplier-payment" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Record Supplier Payment</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-supplier-payment">
+          <input type="hidden" id="pay-supplier-id" />
+          <div style="background:#f8fafc; padding:12px; border-radius:6px; margin-bottom:14px; font-size:13px;">
+            <div>Paying: <b id="pay-supplier-name"></b></div>
+            <div>Current Outstanding Balance: <b id="pay-supplier-balance" style="color:#ef4444;"></b></div>
+          </div>
+          <div class="form-group">
+            <label for="pay-amount-input">Payment Amount (₹) *</label>
+            <input type="number" step="0.01" id="pay-amount-input" required />
+          </div>
+          <div class="form-group">
+            <label for="pay-method-select">Payment Method</label>
+            <select id="pay-method-select">
+              <option value="BANK_TRANSFER">Bank Transfer (NEFT / RTGS)</option>
+              <option value="UPI">UPI</option>
+              <option value="CHEQUE">Cheque</option>
+              <option value="CASH">Cash</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pay-reference-input">Reference / Transaction / Cheque No.</label>
+            <input type="text" id="pay-reference-input" placeholder="e.g. UTR / Cheque No" />
+          </div>
+          <div class="form-group">
+            <label for="pay-notes-input">Notes</label>
+            <input type="text" id="pay-notes-input" placeholder="Optional notes" />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Record Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Ledger Modal -->
+  <div id="modal-supplier-ledger" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="ledger-supplier-title">Supplier Ledger</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:14px; font-size:14px;">
+          Outstanding Balance: <b id="ledger-outstanding" style="color:#ef4444; font-size:16px;"></b>
+        </div>
+        <h4 style="font-size:13px; color:#0f766e; margin-bottom:8px;">Purchases</h4>
+        <table class="data-table" style="margin-bottom:20px;">
+          <thead>
+            <tr>
+              <th>Purchase No</th>
+              <th>Supplier Invoice</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-purchases-tbody"></tbody>
+        </table>
+
+        <h4 style="font-size:13px; color:#0f766e; margin-bottom:8px;">Payment History</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Payment No</th>
+              <th>Date</th>
+              <th>Mode</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-payments-tbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div id="modal-add-customer" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Register Customer</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-customer">
+          <div class="form-group">
+            <label for="cust-name">Customer Full Name *</label>
+            <input type="text" id="cust-name" placeholder="e.g. Dr. Rajesh Kumar" required />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="cust-mobile">Mobile Number *</label>
+              <input type="text" id="cust-mobile" placeholder="10-digit mobile" required />
+            </div>
+            <div class="form-group">
+              <label for="cust-email">Email Address</label>
+              <input type="email" id="cust-email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cust-address">Address</label>
+            <input type="text" id="cust-address" />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="cust-dob">Date of Birth</label>
+              <input type="date" id="cust-dob" />
+            </div>
+            <div class="form-group">
+              <label for="cust-gender">Gender</label>
+              <select id="cust-gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Customer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Purchase History Modal -->
+  <div id="modal-customer-history" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="cust-history-title">Customer Purchase History</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="cust-history-summary" style="font-size:13px; font-weight:600; color:#0f766e; margin-bottom:14px;"></p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Invoice No</th>
+              <th>Date & Time</th>
+              <th>Medicines Bought</th>
+              <th>Amount</th>
+              <th>Mode</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="cust-history-tbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel Import Modal -->
+  <div id="modal-excel-import" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>Import Medicines from Excel</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <p style="font-size:13px; color:#64748b;">Upload a filled Excel template to bulk register or update medicines.</p>
+          <button class="btn btn-secondary btn-sm" onclick="API.download('/api/excel/template/medicines', 'Medicine_Import_Template.xlsx')">
+            Download Blank Template
+          </button>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <div id="excel-drop-zone" style="border:2px dashed #cbd5e1; border-radius:10px; padding:30px; text-align:center; background:#f8fafc; cursor:pointer;">
+          <svg style="width:36px; height:36px; color:#0f766e; margin-bottom:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div style="font-weight:600; font-size:14px; color:#0f172a;">Click to browse or drag and drop Excel file (.xlsx) here</div>
+          <div style="font-size:11.5px; color:#64748b; margin-top:4px;">Supports all standard medical store catalog columns</div>
+          <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display:none;" />
+        </div>
+
+        <!-- Preview Container -->
+        <div id="excel-preview-container" style="display:none; margin-top:20px;">
+          <div id="excel-preview-summary" style="font-size:13px; font-weight:700; color:#0f766e; margin-bottom:10px;"></div>
+          <div class="table-responsive" style="max-height:220px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:6px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Medicine Name</th>
+                  <th>Generic</th>
+                  <th>Category</th>
+                  <th>HSN/GST</th>
+                  <th>Min Stock</th>
+                  <th>Pur. Price</th>
+                  <th>Sell Price</th>
+                </tr>
+              </thead>
+              <tbody id="excel-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Cancel</button>
+        <button id="btn-confirm-excel-import" class="btn btn-primary" style="display:none;">Confirm & Save into Database</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div id="modal-add-user" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Create Staff User Account</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-user">
+          <div class="form-group">
+            <label for="new-user-username">Username *</label>
+            <input type="text" id="new-user-username" placeholder="e.g. ravi_pharma" required />
+          </div>
+          <div class="form-group">
+            <label for="new-user-fullname">Full Name *</label>
+            <input type="text" id="new-user-fullname" placeholder="e.g. R. Ravi, D.Pharm" required />
+          </div>
+          <div class="form-group">
+            <label for="new-user-email">Email Address *</label>
+            <input type="email" id="new-user-email" placeholder="staff@baalajipharmacy.com" required />
+          </div>
+          <div class="form-group">
+            <label for="new-user-password">Password *</label>
+            <input type="password" id="new-user-password" placeholder="••••••••" required />
+          </div>
+          <div class="form-group">
+            <label for="new-user-role">Role *</label>
+            <select id="new-user-role">
+              <option value="Pharmacist">Pharmacist</option>
+              <option value="Cashier">Cashier</option>
+              <option value="Inventory Staff">Inventory Staff</option>
+              <option value="Admin">Administrator</option>
+            </select>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button type="button" class="btn btn-secondary btn-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase Detail Modal -->
+  <div id="modal-purchase-detail" class="modal-overlay">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="pur-detail-title">Purchase Details</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; background:#f8fafc; padding:12px; border-radius:6px; margin-bottom:14px; font-size:13px;">
+          <div>
+            <div>Supplier: <b id="pur-detail-supplier"></b></div>
+            <div>Supplier Invoice No: <b id="pur-detail-inv-no"></b></div>
+          </div>
+          <div style="text-align:right;">
+            <div>Date: <span id="pur-detail-date"></span></div>
+            <div>Invoice Total: <b id="pur-detail-total" style="color:#0f766e; font-size:15px;"></b></div>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:16px; padding:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
+            <b>Supplier Bill:</b>
+            <span id="pur-detail-bill-status">No bill attached</span>
+            <button type="button" id="btn-download-purchase-bill" class="btn btn-secondary btn-sm" style="display:none;">Download Bill</button>
+            <input type="file" id="pur-detail-bill-file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+            <button type="button" id="btn-upload-purchase-bill" class="btn btn-primary btn-sm">Upload / Replace Bill</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Batch</th>
+              <th>Expiry</th>
+              <th>Quantity</th>
+              <th>Cost (₹)</th>
+              <th>MRP (₹)</th>
+              <th>GST%</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="pur-detail-items-tbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Core Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/pos.js"></script>
+  <script src="/js/medicines.js"></script>
+  <script src="/js/purchases.js"></script>
+  <script src="/js/suppliers.js"></script>
+  <script src="/js/customers.js"></script>
+  <script src="/js/alerts.js"></script>
+  <script src="/js/reports.js"></script>
+  <script src="/js/returns.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/invoices.js"></script>
+  <script src="/js/app.js"></script>
+
+</body>
+</html>

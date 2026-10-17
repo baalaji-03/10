@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0f766e" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Background Rounded Shield -->
+  <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#grad)" filter="url(#shadow)"/>
+  <!-- Medical Cross -->
+  <path d="M42 26 H58 V42 H74 V58 H58 V74 H42 V58 H26 V42 H42 Z" fill="#ffffff" rx="4"/>
+  <!-- Heartbeat pulse overlay in center -->
+  <polyline points="32,50 42,50 46,40 50,60 54,45 58,50 68,50" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

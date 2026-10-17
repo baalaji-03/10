@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Baalaji Pharmacy - Dedicated Print Media Styles (58mm, 80mm, A4)
+   ========================================================================== */
+
+@media print {
+  /* Hide all UI elements */
+  body * {
+    visibility: hidden;
+  }
+
+  #app-container, .sidebar, .top-header, .modal-header, .modal-footer, .btn, #toast-container {
+    display: none !important;
+  }
+
+  /* Only make print receipt area visible */
+  #printable-receipt-area, #printable-receipt-area * {
+    visibility: visible;
+  }
+
+  #printable-receipt-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* 58mm Thermal Receipt Print Rules */
+  body.print-58mm {
+    width: 58mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.print-58mm #printable-receipt-area {
+    width: 58mm;
+    font-size: 9.5px;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.15;
+  }
+
+  /* 80mm Thermal Receipt Print Rules */
+  body.print-80mm {
+    width: 80mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.print-80mm #printable-receipt-area {
+    width: 80mm;
+    font-size: 11px;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.25;
+  }
+
+  /* A4 Full Invoice Print Rules */
+  body.print-a4 {
+    width: 210mm;
+  }
+
+  body.print-a4 #printable-receipt-area {
+    width: 100%;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 12px;
+    padding: 10mm;
+  }
+
+  @page {
+    margin: 0;
+  }
+}

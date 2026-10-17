@@ -1,0 +1,14 @@
+{
+  "name": "baalaji-pharmacy-management-system",
+  "version": "1.0.0",
+  "description": "Complete Pharmacy Management System - Web & Windows Desktop",
+  "scripts": {
+    "start:backend": "python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "start:desktop": "electron desktop",
+    "test:backend": "python -m pytest backend/tests/test_pharmacy.py -v",
+    "build:desktop": "cd desktop && npm install && npm run build:win"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0"
+  }
+}
